@@ -1,0 +1,14 @@
+<BREAKS>
+  <BP>
+    <UnitName>J3_OLED_SH1106.c</UnitName>
+    <Line>68</Line>
+    <Enabled>True</Enabled>
+    <Type>0</Type>
+  </BP>
+  <BP>
+    <UnitName>J3_OLED_SH1106.c</UnitName>
+    <Line>76</Line>
+    <Enabled>True</Enabled>
+    <Type>0</Type>
+  </BP>
+</BREAKS>
