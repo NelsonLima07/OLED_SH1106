@@ -4531,7 +4531,6 @@ clken_usart3_cr2_bit
 clksource
 clksource
 clksource_bit
-cllndisplay
 clrena
 clrena
 clrena0
@@ -4728,7 +4727,6 @@ clrpend8_nvic_icpr1_bit
 clrpend9
 clrpend9_bit
 clrpend9_nvic_icpr1_bit
-clsdisplay
 cmdact
 cmdact
 cmdact_bit
@@ -6019,7 +6017,6 @@ current8_bit
 current9
 current9_bit
 cursorx
-cursorxy
 cursory
 cwuf
 cwuf
@@ -14861,8 +14858,24 @@ iwdgrstf
 iwdgrstf
 iwdgrstf_bit
 j3_oled_clearbuffer
+j3_oled_cllndisplay
+j3_oled_clsdisplay
+j3_oled_cursorx
+j3_oled_cursorxy
+j3_oled_cursory
+j3_oled_linehbuffer
+j3_oled_linevbuffer
+j3_oled_offdisplay
+j3_oled_ondisplay
 j3_oled_putpixelbuffer
+j3_oled_rectanglebuffer
 j3_oled_setbuffer
+j3_oled_setcontrast
+j3_oled_setdisplayclock
+j3_oled_setdisplayline
+j3_oled_setnormal
+j3_oled_setpixelxy
+j3_oled_setreverse
 jauto
 jauto
 jauto
@@ -18432,7 +18445,6 @@ odr9_gpiod_odr_bit
 odr9_gpioe_odr_bit
 odr9_gpiof_odr_bit
 odr9_gpiog_odr_bit
-offdisplay
 ois1
 ois1
 ois1
@@ -18469,7 +18481,6 @@ ois4
 ois4_bit
 ois4_tim8_cr2_bit
 oled_buffer
-ondisplay
 opm
 opm
 opm
@@ -20720,9 +20731,6 @@ sendcmd
 senddata
 sendglyphs
 set_fosc_khz
-setcontrast
-setdisplayclock
-setdisplayline
 setena
 setena
 setena0
@@ -20821,7 +20829,6 @@ setena8_nvic_iser1_bit
 setena9
 setena9_bit
 setena9_nvic_iser1_bit
-setnormal
 setpend
 setpend
 setpend0
@@ -20920,8 +20927,6 @@ setpend8_nvic_ispr1_bit
 setpend9
 setpend9_bit
 setpend9_nvic_ispr1_bit
-setpixelxy
-setreverse
 setup
 setup
 setup

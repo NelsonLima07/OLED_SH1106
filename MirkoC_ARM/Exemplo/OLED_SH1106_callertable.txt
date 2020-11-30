@@ -7,7 +7,7 @@ main
 	Soft_I2C_Init
 		GPIO_Clk_Enable
 		GPIO_Config
-	offDisplay
+	J3_OLED_offDisplay
 		sendCmd
 			Soft_I2C_Start
 				Delay_1us
@@ -15,29 +15,36 @@ main
 				Delay_1us
 			Soft_I2C_Stop
 				Delay_1us
-	clsDisplay
-		offDisplay
-		clLnDisplay
-			cursorXY
-				cursorY
+	J3_OLED_clsDisplay
+		J3_OLED_offDisplay
+		J3_OLED_clLnDisplay
+			J3_OLED_cursorXY
+				J3_OLED_cursorY
 					sendCmd
-				cursorX
+				J3_OLED_cursorX
 					sendCmd
 			sendData
 				Soft_I2C_Start
 				Soft_I2C_Write
 				Soft_I2C_Stop
-		onDisplay
+		J3_OLED_onDisplay
 			sendCmd
-	setNormal
+	J3_OLED_setNormal
 		sendCmd
-	setContrast
+	J3_OLED_setContrast
 		sendCmd
-	onDisplay
-	setDisplayClock
+	J3_OLED_onDisplay
+	J3_OLED_setDisplayClock
 		sendCmd
-	cursorXY
-	strFont5
-		charFont5
-			sendGlyphs
-				sendData
+	J3_OLED_clearBuffer
+		J3_OLED_cursorY
+		J3_OLED_cursorX
+	J3_OLED_lineHBuffer
+	J3_OLED_lineVBuffer
+		J3_OLED_putPixelBuffer
+	J3_OLED_rectangleBuffer
+		J3_OLED_putPixelBuffer
+	J3_OLED_setBuffer
+		J3_OLED_cursorY
+		J3_OLED_cursorX
+		sendData

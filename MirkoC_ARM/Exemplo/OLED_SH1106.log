@@ -1,18 +1,18 @@
-0	1	mikroCARM.exe -MSF -DBG -pSTM32F103C8 -BIN -LHF -DL -SSA -O11111114 -fo8 -N"C:\NelsonLima\Eletronica\Componentes\OLED_SH1106\MirkoC_ARM\Exemplo\OLED_SH1106.mcpar" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for ARM\Defs\" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for ARM\Uses\ST M3\" -SP"C:\NelsonLima\Eletronica\Componentes\OLED_SH1106\MirkoC_ARM\Exemplo\" -SP"C:\NelsonLima\Eletronica\Componentes\OLED_SH1106\MirkoC_ARM\" -IP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for ARM\Uses\ST M3\" "main_OLED_SH1106.c" "J3_OLED_SH1106.c" "__Lib_Math.emcl" "__Lib_MathDouble.emcl" "__Lib_Delays.emcl" "__Lib_System_101_102_103.emcl" "__Lib_GPIO_32F10x_Defs.emcl" "__Lib_GPIO_32F10x.emcl" "__Lib_SoftI2C.emcl" "__Lib_I2C_12.emcl"	 
+0	1	mikroCARM.exe -MSF -DBG -pSTM32F103C8 -BIN -LHF -DL -SSA -O11111114 -fo8 -N"C:\NelsonLima\Eletronica\Componentes\OLED_SH1106.git\trunk\MirkoC_ARM\Exemplo\OLED_SH1106.mcpar" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for ARM\Defs\" -SP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for ARM\Uses\ST M3\" -SP"C:\NelsonLima\Eletronica\Componentes\OLED_SH1106.git\trunk\MirkoC_ARM\Exemplo\" -SP"C:\NelsonLima\Eletronica\Componentes\OLED_SH1106.git\trunk\MirkoC_ARM\" -IP"C:\Users\Public\Documents\Mikroelektronika\mikroC PRO for ARM\Uses\ST M3\" "main_OLED_SH1106.c" "J3_OLED_SH1106.c" "__Lib_Math.emcl" "__Lib_MathDouble.emcl" "__Lib_Delays.emcl" "__Lib_System_101_102_103.emcl" "__Lib_GPIO_32F10x_Defs.emcl" "__Lib_GPIO_32F10x.emcl" "__Lib_SoftI2C.emcl" "__Lib_I2C_12.emcl"	 
 diagnostics: 0	122	Compilation Started	j3_oled_sh1106.h
-diagnostics: 71	123	Compiled Successfully	main_OLED_SH1106.c
-hint: 11	1164	Variable 'auxX' has been eliminated by optimizer	main_OLED_SH1106.c
+diagnostics: 78	123	Compiled Successfully	main_OLED_SH1106.c
 hint: 12	1164	Variable 'auxY' has been eliminated by optimizer	main_OLED_SH1106.c
 diagnostics: 0	122	Compilation Started	font5.h
-diagnostics: 199	123	Compiled Successfully	J3_OLED_SH1106.c
-hint: 27	1164	Variable 'auxPage' has been eliminated by optimizer	J3_OLED_SH1106.c
-hint: 28	1164	Variable 'auxResto' has been eliminated by optimizer	J3_OLED_SH1106.c
-hint: 153	1164	Variable 'auxDado' has been eliminated by optimizer	J3_OLED_SH1106.c
-diagnostics: 0	127	All files Compiled in 109 ms	 
+diagnostics: 231	123	Compiled Successfully	J3_OLED_SH1106.c
+hint: 75	1164	Variable 'auxPage' has been eliminated by optimizer	J3_OLED_SH1106.c
+hint: 76	1164	Variable 'auxResto' has been eliminated by optimizer	J3_OLED_SH1106.c
+hint: 87	1164	Variable 'auxDado' has been eliminated by optimizer	J3_OLED_SH1106.c
+hint: 185	1164	Variable 'auxDado' has been eliminated by optimizer	J3_OLED_SH1106.c
+diagnostics: 0	127	All files Compiled in 94 ms	 
 hint: 0	1144	Used RX: 16 (100%)   Free RX: 0 (0%)	Used RX: 16 (100%)   Free RX: 0 (0%)
-hint: 0	1144	Static RAM (bytes): 25   Dynamic RAM (bytes): 20449	Static RAM (bytes): 25   Dynamic RAM (bytes): 20449
-hint: 0	1144	Used ROM (bytes): 3500 (5%)  Free ROM (bytes): 62036 (95%)	Used ROM (bytes): 3500 (5%)  Free ROM (bytes): 62036 (95%)
+hint: 0	1144	Static RAM (bytes): 1029   Dynamic RAM (bytes): 19445	Static RAM (bytes): 1029   Dynamic RAM (bytes): 19445
+hint: 0	1144	Used ROM (bytes): 3214 (5%)  Free ROM (bytes): 62322 (95%)	Used ROM (bytes): 3214 (5%)  Free ROM (bytes): 62322 (95%)
 diagnostics: 0	125	Project Linked Successfully	OLED_SH1106.mcpar
-diagnostics: 0	128	Linked in 157 ms	 
-diagnostics: 0	129	Project 'OLED_SH1106.mcpar' completed: 329 ms	 
-diagnostics: 0	103	Finished successfully: 29 nov 2020, 08:02:42	OLED_SH1106.mcpar
+diagnostics: 0	128	Linked in 156 ms	 
+diagnostics: 0	129	Project 'OLED_SH1106.mcpar' completed: 328 ms	 
+diagnostics: 0	103	Finished successfully: 30 nov 2020, 03:35:03	OLED_SH1106.mcpar

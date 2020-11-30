@@ -1,5 +1,5 @@
-#line 1 "C:/NelsonLima/Eletronica/Componentes/OLED_SH1106/MirkoC_ARM/J3_OLED_SH1106.c"
-#line 1 "c:/nelsonlima/eletronica/componentes/oled_sh1106/mirkoc_arm/font5.h"
+#line 1 "C:/NelsonLima/Eletronica/Componentes/OLED_SH1106.git/trunk/MirkoC_ARM/J3_OLED_SH1106.c"
+#line 1 "c:/nelsonlima/eletronica/componentes/oled_sh1106.git/trunk/mirkoc_arm/font5.h"
 
 
 
@@ -11,7 +11,7 @@
 
 code const unsigned char font5[96][5] =
 {
-#line 29 "c:/nelsonlima/eletronica/componentes/oled_sh1106/mirkoc_arm/font5.h"
+#line 29 "c:/nelsonlima/eletronica/componentes/oled_sh1106.git/trunk/mirkoc_arm/font5.h"
  {0x00, 0xC0, 0xC0, 0x00, 0x00},
  {0x40, 0x20, 0x10, 0x08, 0x04},
  {0x7C, 0x82, 0x82, 0x82, 0x7C},
@@ -101,7 +101,7 @@ code const unsigned char font5[96][5] =
 
 
 };
-#line 1 "c:/nelsonlima/eletronica/componentes/oled_sh1106/mirkoc_arm/j3_oled_sh1106.h"
+#line 1 "c:/nelsonlima/eletronica/componentes/oled_sh1106.git/trunk/mirkoc_arm/j3_oled_sh1106.h"
 
 
 
@@ -112,18 +112,18 @@ code const unsigned char font5[96][5] =
 
 
 
-void onDisplay(void);
-void offDisplay(void);
-void setDisplayLine(void);
-void setContrast(unsigned char contr);
-void setNormal(void);
-void setReverse(void);
-void clsDisplay(void);
-void setDisplayClock(void);
-void cursorX(unsigned char add);
-void cursorY(unsigned char add);
-void cursorXY(unsigned char _x, unsigned char _y);
-void setPixelXY(unsigned char x, unsigned char y);
+void J3_OLED_onDisplay(void);
+void J3_OLED_offDisplay(void);
+void J3_OLED_setDisplayLine(void);
+void J3_OLED_setContrast(unsigned char contr);
+void J3_OLED_setNormal(void);
+void J3_OLED_setReverse(void);
+void J3_OLED_clsDisplay(void);
+void J3_OLED_setDisplayClock(void);
+void J3_OLED_cursorX(unsigned char add);
+void J3_OLED_cursorY(unsigned char add);
+void J3_OLED_cursorXY(unsigned char _x, unsigned char _y);
+void J3_OLED_setPixelXY(unsigned char x, unsigned char y);
 
 
 
@@ -133,76 +133,28 @@ void setPixelXY(unsigned char x, unsigned char y);
 unsigned char J3_OLED_putPixelBuffer(unsigned char _x, unsigned char _y);
 
 
+void J3_OLED_lineHBuffer(unsigned char _y);
+
+
+void J3_OLED_lineVBuffer(unsigned char _x);
+
+
+
+void J3_OLED_rectangleBuffer(unsigned char _x1, unsigned char _y1, unsigned char _x2, unsigned char _y2);
+
+
+unsigned char J3_OLED_putCharBuffer(unsigned char character);
+
+
 void J3_OLED_setBuffer(void);
 
 
 void charFont5(unsigned char character);
 void strFont5(unsigned char s[]);
-#line 1 "c:/users/public/documents/mikroelektronika/mikroc pro for arm/include/string.h"
-
-
-
-
-
-void * memchr(void *p, char n, unsigned int v);
-int memcmp(void *s1, void *s2, int n);
-void * memcpy(void * d1, void * s1, int n);
-void * memmove(void * to, void * from, int n);
-void * memset(void * p1, char character, int n);
-char * strcat(char * to, char * from);
-char * strchr(char * ptr, char chr);
-int strcmp(char * s1, char * s2);
-char * strcpy(char * to, char * from);
-int strlen(char * s);
-char * strncat(char * to, char * from, int size);
-char * strncpy(char * to, char * from, int size);
-int strspn(char * str1, char * str2);
-char strcspn(char * s1, char * s2);
-int strncmp(char * s1, char * s2, char len);
-char * strpbrk(char * s1, char * s2);
-char * strrchr(char *ptr, char chr);
-char * strstr(char * s1, char * s2);
-char * strtok(char * s1, char * s2);
-#line 8 "C:/NelsonLima/Eletronica/Componentes/OLED_SH1106/MirkoC_ARM/J3_OLED_SH1106.c"
+#line 6 "C:/NelsonLima/Eletronica/Componentes/OLED_SH1106.git/trunk/MirkoC_ARM/J3_OLED_SH1106.c"
 unsigned char oled_buffer[128][8];
-
-void sendData(unsigned char dat);
-
-void J3_OLED_clearBuffer(void){
-
- unsigned short iY, iX;
- for(iY=0;iY<=7;iY++){
- cursorY(iY);
- for(iX=0;iX<=127;iX++){
- cursorX(iX);
- oled_buffer[iX][iY] = 0x00;
- }
- }
-}
-
-unsigned char J3_OLED_putPixelBuffer(unsigned char _x, unsigned char _y){
-
- unsigned char auxDado;
- unsigned char auxPage;
- unsigned char auxResto;
- auxPage = _y / 8;
- auxResto = _y % 8;
- auxDado = oled_buffer[_x][auxPage];
- auxDado = auxDado | (0b00000001 << auxResto);
- oled_buffer[_x][auxPage] = auxDado;
- return auxDado;
-}
-
-void J3_OLED_setBuffer(void){
- unsigned short iY, iX;
- for(iY=0;iY<=7;iY++){
- cursorY(iY);
- cursorX(0);
- for(iX=0;iX<=127;iX++){
- sendData(oled_buffer[iX][iY]);
- }
- }
-}
+unsigned char cursorX;
+unsigned char cursorY;
 
 
 void sendCmd(unsigned char cmd){
@@ -219,77 +171,145 @@ void sendData(unsigned char dat){
  Soft_I2C_Write(dat);
  Soft_I2C_Stop();
 }
-#line 87 "C:/NelsonLima/Eletronica/Componentes/OLED_SH1106/MirkoC_ARM/J3_OLED_SH1106.c"
+
+
 unsigned char readData(){
  unsigned char aux;
  Soft_I2C_Start();
- Soft_I2C_Write( 0x7B );
+ Soft_I2C_Write( 0x78 );
  Soft_I2C_Write(0x00);
  aux = Soft_I2C_Read(0);
  Soft_I2C_Stop();
  return aux;
 }
+#line 62 "C:/NelsonLima/Eletronica/Componentes/OLED_SH1106.git/trunk/MirkoC_ARM/J3_OLED_SH1106.c"
+void J3_OLED_clearBuffer(void){
+ unsigned short iY, iX;
+ for(iY=0;iY<=7;iY++){
+ J3_OLED_cursorY(iY);
+ for(iX=0;iX<=127;iX++){
+ J3_OLED_cursorX(iX);
+ oled_buffer[iX][iY] = 0x00;
+ }
+ }
+}
 
+unsigned char J3_OLED_putPixelBuffer(unsigned char _x, unsigned char _y){
+ unsigned char auxDado;
+ unsigned char auxPage;
+ unsigned char auxResto;
+ auxPage = _y / 8;
+ auxResto = _y % 8;
+ auxDado = oled_buffer[_x][auxPage];
+ auxDado = auxDado | (0b00000001 << auxResto);
+ oled_buffer[_x][auxPage] = auxDado;
+ return auxDado;
+}
 
-void onDisplay(void){
+void J3_OLED_lineHBuffer(unsigned char _y){
+ unsigned short iX;
+ unsigned char auxDado;
+ unsigned char auxPage;
+ unsigned char auxResto;
+ auxPage = _y / 8;
+ auxResto = _y % 8;
+ for(iX=0; iX<=127; iX++){
+ auxDado = oled_buffer[iX][auxPage];
+ auxDado = auxDado | (0b00000001 << auxResto);
+ oled_buffer[iX][auxPage] = auxDado;
+ }
+}
+
+void J3_OLED_lineVBuffer(unsigned char _x){
+ unsigned short iY;
+ for(iY=0; iY<=63; iY++){
+ J3_OLED_putPixelBuffer(_x,iY);
+ }
+}
+
+void J3_OLED_rectangleBuffer(unsigned char _x1, unsigned char _y1, unsigned char _x2, unsigned char _y2){
+ unsigned short iX;
+ unsigned short iY;
+ for(iY=_y1; iY<=_y2; iY++){
+ J3_OLED_putPixelBuffer(_x1,iY);
+ J3_OLED_putPixelBuffer(_x2,iY);
+ }
+ for(iX=_x1; iX<=_x2; iX++){
+ J3_OLED_putPixelBuffer(iX,_y1);
+ J3_OLED_putPixelBuffer(iX,_y2);
+ }
+}
+
+void J3_OLED_setBuffer(void){
+ unsigned short iY, iX;
+ for(iY=0;iY<=7;iY++){
+ J3_OLED_cursorY(iY);
+ J3_OLED_cursorX(0);
+ for(iX=0;iX<=127;iX++){
+ sendData(oled_buffer[iX][iY]);
+ }
+ }
+}
+
+void J3_OLED_onDisplay(void){
  sendCmd(0xAF) ;
 }
-void offDisplay(void){
+void J3_OLED_offDisplay(void){
  sendCmd(0xAE) ;
 }
-void setContrast(unsigned char contr){
+void J3_OLED_setContrast(unsigned char contr){
  sendCmd(0x81);
  sendCmd(contr);
 }
-void setDisplayLine(void) {
+void J3_OLED_setDisplayLine(void) {
  sendCmd(0x40) ;
 }
-void setNormal(void){
+void J3_OLED_setNormal(void){
  sendCmd(0xA6);
 }
-void setReverse(void){
+void J3_OLED_setReverse(void){
  sendCmd(0xA7);
 }
 
-void setDisplayClock(void){
+void J3_OLED_setDisplayClock(void){
  sendCmd(0xD5);
  sendCmd(0x00);
 }
 
-void cursorY(unsigned char add) {
+void J3_OLED_cursorY(unsigned char add) {
  sendCmd(0xB0 | add) ;
 }
 
-void cursorX(unsigned char add){
+void J3_OLED_cursorX(unsigned char add){
  add = add+ 2  ;
  sendCmd(0x10 | (add>>4)) ;
  sendCmd(0x0F & add) ;
 }
-void cursorXY(unsigned char x, unsigned char y){
- cursorY(y) ;
- cursorX(x) ;
+void J3_OLED_cursorXY(unsigned char x, unsigned char y){
+ J3_OLED_cursorY(y) ;
+ J3_OLED_cursorX(x) ;
 }
-void clLnDisplay(unsigned char yline){
+void J3_OLED_clLnDisplay(unsigned char yline){
  unsigned char ram ;
- cursorXY(0, yline) ;
+ J3_OLED_cursorXY(0, yline) ;
  for (ram= 128  ; ram>0 ; ram--)
  { sendData(0); }
- cursorXY(0, yline) ;
+ J3_OLED_cursorXY(0, yline) ;
 }
-void clsDisplay(void){
+void J3_OLED_clsDisplay(void){
  unsigned char line;
- offDisplay() ;
+ J3_OLED_offDisplay() ;
  for (line = 8 ; line > 0 ; line--)
- { clLnDisplay(8 - line) ; }
- onDisplay() ;
+ { J3_OLED_clLnDisplay(8 - line) ; }
+ J3_OLED_onDisplay() ;
 }
 
-void setPixelXY(unsigned char _x, unsigned char _y){
+void J3_OLED_setPixelXY(unsigned char _x, unsigned char _y){
  unsigned char auxPage;
  unsigned char auxDado;
  auxPage = _y / 8;
- cursorX(_x);
- cursorY(auxPage);
+ J3_OLED_cursorX(_x);
+ J3_OLED_cursorY(auxPage);
  auxDado = J3_OLED_putPixelBuffer(_x, _y);
  sendData(auxDado);
 }
@@ -308,7 +328,7 @@ void rptPix(unsigned char pix, unsigned char blank, unsigned char percent){
 }
 
 void barDisplay(unsigned char barG){
- cursorXY(0, 7) ;
+ J3_OLED_cursorXY(0, 7) ;
  rptPix(0b11111111, 0b10000001, barG);
 }
 void sendGlyphs(const unsigned char *pRow, unsigned char size){
