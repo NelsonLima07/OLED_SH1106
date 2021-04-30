@@ -24,6 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdlib.h>
 #include <usr/J3_SH1106.h>
 /* USER CODE END Includes */
 
@@ -55,13 +56,17 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void desenhaBola(TOLED* _oled, uint8_t _x, uint8_t _y);
+void apagaBola(TOLED* _oled, uint8_t _x, uint8_t _y);
 /* USER CODE END 0 */
 
 /**
   * @brief  The application entry point.
   * @retval int
   */
+
+
+
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -102,8 +107,10 @@ int main(void)
   J3_SH1106_setContrast(oled,255);
   J3_SH1106_onDisplay(oled);
   J3_SH1106_setDisplayClock(oled);
-  uint8_t x = 0;
-  uint8_t y = 0;
+
+  uint8_t x = 1;
+  uint8_t y = 31;
+  uint16_t cont = 0;
 
   while (1)
   {
@@ -112,25 +119,57 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  //J3_SH1106_offDisplay(oled);
 	  //J3_SH1106_clsDisplay2(oled);
-	  J3_SH1106_setPixel(oled,  x, y);
+
+      desenhaBola(oled,x,y);
+      //J3_SH1106_setContrast(oled,255);
+      HAL_Delay(55);
+      //J3_SH1106_setContrast(oled,0);
+      //J3_SH1106_clsDisplay2(oled);
+      apagaBola(oled,x,y);
+
+      if (cont == 0){
+    	x++;
+      }else{
+        x--;
+      }
+
+      if(x==126){
+        cont=1;
+      }
+      if(x==1){
+    	cont=0;
+      }
+
+
+	  //if (cont > 2000){
+	//	cont = 0;
+	//	HAL_Delay(500);
+	//  }
+
+
+	  //cont++;
 	  //J3_SH1106_onDisplay(oled);
-	  HAL_Delay(55);
-	  J3_SH1106_setPixel2(oled,x,y);
+	  //HAL_Delay(5);
+	  //J3_SH1106_setPixel(oled,x,y);
+	  /*
 	  x++;
 	  if(x>127){
 		  y++;
 		  x=0;
 	  }
-	  if(y>7){
+	  if(y>63){
 	   y=0;
+	   J3_SH1106_clsDisplay(oled);
 	  }
+      */
 
-	  //HAL_Delay(200);
 
 
   }
   /* USER CODE END 3 */
 }
+
+
 
 /**
   * @brief System Clock Configuration
@@ -171,6 +210,33 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void desenhaBola(TOLED* _oled, uint8_t _x, uint8_t _y){
+  J3_SH1106_setPixel(_oled,_x-1,_y-1);
+  J3_SH1106_setPixel(_oled,_x-1,_y);
+  J3_SH1106_setPixel(_oled,_x-1,_y+1);
+
+  J3_SH1106_setPixel(_oled,_x,_y-1);
+  J3_SH1106_setPixel(_oled,_x,_y);
+  J3_SH1106_setPixel(_oled,_x,_y+1);
+
+  J3_SH1106_setPixel(_oled,_x+1,_y-1);
+  J3_SH1106_setPixel(_oled,_x+1,_y);
+  J3_SH1106_setPixel(_oled,_x+1,_y+1);
+}
+
+void apagaBola(TOLED* _oled, uint8_t _x, uint8_t _y){
+  J3_SH1106_setClsPixel(_oled,_x-1,_y-1);
+  J3_SH1106_setClsPixel(_oled,_x-1,_y);
+  J3_SH1106_setClsPixel(_oled,_x-1,_y+1);
+
+  J3_SH1106_setClsPixel(_oled,_x,_y-1);
+  J3_SH1106_setClsPixel(_oled,_x,_y);
+  J3_SH1106_setClsPixel(_oled,_x,_y+1);
+
+  J3_SH1106_setClsPixel(_oled,_x+1,_y-1);
+  J3_SH1106_setClsPixel(_oled,_x+1,_y);
+  J3_SH1106_setClsPixel(_oled,_x+1,_y+1);
+}
 
 /* USER CODE END 4 */
 
