@@ -32,6 +32,7 @@ void J3_SH1106_cursorClsLine(TOLED* _oled);
 void J3_SH1106_setPixel(TOLED* _oled,  uint8_t _x, uint8_t _y);    /* Set pixel na tela */
 void J3_SH1106_setClsPixel(TOLED* _oled,  uint8_t _x, uint8_t _y); /* Limpa pixel na tela */
 void J3_SH1106_clsDisplay2(TOLED* _oled); /* Limpa o display somente onde houver "sujeira" */
+void J3_SH1106_line(TOLED* _oled, uint8_t _x0, uint8_t _y0, uint8_t _x1, uint8_t _y1);
 
 
 #endif /* INC_J3_SH1106_H_ */

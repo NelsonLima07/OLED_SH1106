@@ -75,7 +75,7 @@ uint8_t j3_sh1106_calcByteCls(TOLED* _oled, uint8_t _x, uint8_t _y){
   page = _y / 8;
   auxIndex = j3_sh1106_getIndexBuffer(_x,page);
   resto = _y % 8;
-  _oled->buffer[auxIndex]  = _oled->buffer[auxIndex] & (0xFE << resto);
+  _oled->buffer[auxIndex]  = _oled->buffer[auxIndex] & (~(0x01 << resto));             //(0xFE << resto);
   return _oled->buffer[auxIndex];
 }
 
@@ -198,6 +198,10 @@ void J3_SH1106_setClsPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
   }
 }
 
+void J3_SH1106_setChar(TOLED*_oled, unsigned char _c){
+
+}
+
 void J3_SH1106_clsDisplay2(TOLED* _oled){
   uint16_t auxIndex;
   for (uint8_t line = 0 ; line <= 7; line++){
@@ -212,6 +216,41 @@ void J3_SH1106_clsDisplay2(TOLED* _oled){
 	}
   }
 }
+
+void J3_SH1106_line(TOLED* _oled, uint8_t _x0, uint8_t _y0, uint8_t _x1, uint8_t _y1){
+  if (_x0 == _x1 && _y0 == _y1) {
+	  J3_SH1106_setPixel(_oled, _x0, _y0);
+    return;
+  }
+  int8_t dx, dy, p, sx, sy;
+
+  dx = _x1 - _x0;
+  sx = (dx < 0) ? -1 : 1;
+  dy = _y1 - _y0;
+  sy = (dy < 0) ? -1 : 1;
+
+  if (abs(dy) < abs(dx)){
+    float m = dy / dx;
+    float b = _y0 - m * _x0;
+
+    while (_x0 != _x1){
+      J3_SH1106_setPixel(_oled, _x0, (uint8_t)(m * _x0 + b) );
+      _x0 += sx;
+    }
+  }
+  else {
+    float m = dx / dy;
+    float b = _x0 - m * _y0;
+
+    while (_y0 != _y1){
+      J3_SH1106_setPixel(_oled, (uint8_t)(m * _y0 + b), _y0);
+          _y0 += sy;
+    }
+  }
+
+  J3_SH1106_setPixel(_oled, _x1, _y1);
+}
+
 
 void J3_SH1106_writeBuffer(TOLED* _oled){
   for(uint8_t y = 0; y < 7; y++){

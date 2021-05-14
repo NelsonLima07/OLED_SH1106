@@ -112,6 +112,19 @@ int main(void)
   uint8_t y = 31;
   uint16_t cont = 0;
 
+  J3_SH1106_line(oled, 0,0,127,0);
+  J3_SH1106_line(oled, 0,0,0,63);
+  J3_SH1106_line(oled, 0,63,127,63);
+  J3_SH1106_line(oled, 127,63,127,0);
+
+
+  //J3_SH1106_setPixel(oled,0,0);
+  //J3_SH1106_setPixel(oled,0,63);
+  //J3_SH1106_setPixel(oled,127,0);
+  //J3_SH1106_setPixel(oled,127,63);
+  desenhaBola(oled,1,3);
+  HAL_Delay(2000);
+  apagaBola(oled,1,3);
   while (1)
   {
     /* USER CODE END WHILE */
@@ -120,12 +133,12 @@ int main(void)
 	  //J3_SH1106_offDisplay(oled);
 	  //J3_SH1106_clsDisplay2(oled);
 
-      desenhaBola(oled,x,y);
+     // desenhaBola(oled,x,y);
       //J3_SH1106_setContrast(oled,255);
-      HAL_Delay(55);
+      //HAL_Delay(55);
       //J3_SH1106_setContrast(oled,0);
       //J3_SH1106_clsDisplay2(oled);
-      apagaBola(oled,x,y);
+      //apagaBola(oled,x,y);
 
       if (cont == 0){
     	x++;
