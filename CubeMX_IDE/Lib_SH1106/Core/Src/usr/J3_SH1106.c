@@ -170,6 +170,7 @@ void J3_SH1106_clsDisplay(TOLED* _oled){
   }
 }
 
+/*
 void J3_SH1106_setPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
   if ((_x < 128) && (_y < 64)){
     uint8_t page = _y / 8;
@@ -183,7 +184,29 @@ void J3_SH1106_setPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
     j3_sh1106_sendDado(_oled, dado);
   }
 }
+*/
 
+void J3_SH1106_setPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
+  if ((_x < 128) && (_y < 64)){
+    uint8_t page = _y / 8;
+    //uint8_t dado;
+
+    uint16_t auxIndex;
+    uint8_t resto;
+
+    auxIndex = j3_sh1106_getIndexBuffer(_x,page);
+    resto = _y % 8;
+    if( _oled->buffer[auxIndex]  != (_oled->buffer[auxIndex] | (0x01 << resto)) ){
+      _oled->buffer[auxIndex]  = (_oled->buffer[auxIndex] | (0x01 << resto));
+      J3_SH1106_cursorX(_oled, _x);
+      J3_SH1106_cursorY(_oled, page);
+      j3_sh1106_sendDado(_oled, _oled->buffer[auxIndex]);
+    }
+  }
+}
+
+
+/*
 void J3_SH1106_setClsPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
   if ((_x < 128) && (_y < 64)){
     uint8_t page = _y / 8;
@@ -195,6 +218,25 @@ void J3_SH1106_setClsPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
     dado = j3_sh1106_calcByteCls(_oled, _x, _y);
 
     j3_sh1106_sendDado(_oled, dado);
+  }
+}*/
+
+void J3_SH1106_setClsPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
+  if ((_x < 128) && (_y < 64)){
+    uint8_t page = _y / 8;
+    //uint8_t dado;
+    uint16_t auxIndex;
+    uint8_t resto;
+
+    auxIndex = j3_sh1106_getIndexBuffer(_x,page);
+    resto = _y % 8;
+
+    if( _oled->buffer[auxIndex]  != (_oled->buffer[auxIndex] & (~(0x01 << resto)) ) ){
+      _oled->buffer[auxIndex]  = _oled->buffer[auxIndex] & (~(0x01 << resto));
+      J3_SH1106_cursorX(_oled, _x);
+      J3_SH1106_cursorY(_oled, page);
+      j3_sh1106_sendDado(_oled, _oled->buffer[auxIndex]);
+    }
   }
 }
 
@@ -222,7 +264,7 @@ void J3_SH1106_line(TOLED* _oled, uint8_t _x0, uint8_t _y0, uint8_t _x1, uint8_t
 	  J3_SH1106_setPixel(_oled, _x0, _y0);
     return;
   }
-  int8_t dx, dy, p, sx, sy;
+  int8_t dx, dy, sx, sy;
 
   dx = _x1 - _x0;
   sx = (dx < 0) ? -1 : 1;
@@ -230,7 +272,7 @@ void J3_SH1106_line(TOLED* _oled, uint8_t _x0, uint8_t _y0, uint8_t _x1, uint8_t
   sy = (dy < 0) ? -1 : 1;
 
   if (abs(dy) < abs(dx)){
-    float m = dy / dx;
+    float m = (float) dy / dx;
     float b = _y0 - m * _x0;
 
     while (_x0 != _x1){
@@ -239,7 +281,7 @@ void J3_SH1106_line(TOLED* _oled, uint8_t _x0, uint8_t _y0, uint8_t _x1, uint8_t
     }
   }
   else {
-    float m = dx / dy;
+    float m = (float) dx / dy;
     float b = _x0 - m * _y0;
 
     while (_y0 != _y1){
@@ -250,6 +292,106 @@ void J3_SH1106_line(TOLED* _oled, uint8_t _x0, uint8_t _y0, uint8_t _x1, uint8_t
 
   J3_SH1106_setPixel(_oled, _x1, _y1);
 }
+
+void J3_SH1106_lineDash(TOLED* _oled, uint8_t _x0, uint8_t _y0, uint8_t _x1, uint8_t _y1){
+  if (_x0 == _x1 && _y0 == _y1) {
+ 	  J3_SH1106_setPixel(_oled, _x0, _y0);
+     return;
+   }
+   int8_t dx, dy, sx, sy;
+   int8_t p = 1;
+
+   dx = _x1 - _x0;
+   sx = (dx < 0) ? -1 : 1;
+   dy = _y1 - _y0;
+   sy = (dy < 0) ? -1 : 1;
+
+   if (abs(dy) < abs(dx)){
+     float m = (float) dy / dx;
+     float b = _y0 - m * _x0;
+
+     while (_x0 != _x1){
+       if(p){
+         J3_SH1106_setPixel(_oled, _x0, (uint8_t)(m * _x0 + b) );
+         p = 0;
+       }
+       else{
+    	 J3_SH1106_setClsPixel(_oled, _x0, (uint8_t)(m * _x0 + b) );
+    	 p = 1;
+       }
+
+       _x0 += sx;
+     }
+   }
+   else {
+     float m = (float) dx / dy;
+     float b = _x0 - m * _y0;
+
+     while (_y0 != _y1){
+       if(p){
+         J3_SH1106_setPixel(_oled, (uint8_t)(m * _y0 + b), _y0);
+         p = 0;
+       }
+       else{
+    	 J3_SH1106_setClsPixel(_oled, (uint8_t)(m * _y0 + b), _y0);
+    	 p = 1;
+       }
+       _y0 += sy;
+     }
+   }
+
+   J3_SH1106_setPixel(_oled, _x1, _y1);
+}
+
+void J3_SH1106_plotByteX(TOLED* _oled, uint8_t _x, uint8_t _y, uint8_t _b){
+  uint8_t aux = 0x80;
+
+  for(uint8_t i=0; i<=7;i++){
+	  if( _b & (aux >> i) )
+		J3_SH1106_setPixel(_oled, _x + i, _y);
+	  else
+		J3_SH1106_setClsPixel(_oled, _x + i, _y);
+  }
+}
+
+void J3_SH1106_plotByteY(TOLED* _oled, uint8_t _x, uint8_t _y, uint8_t _b){
+  uint8_t aux = 0x80;
+
+  for(uint8_t i=0; i<=7;i++){
+	  if( _b & (aux >> i) )
+		J3_SH1106_setPixel(_oled, _x, _y + i);
+	  else
+		J3_SH1106_setClsPixel(_oled, _x, _y + i);
+  }
+}
+
+void J3_SH1106_draw(TOLED* _oled, uint8_t* _draw, uint8_t _x, uint8_t _y, uint8_t _w, uint8_t _h){
+  uint16_t tam = _w * _h;
+  uint16_t contX = 0;
+  uint8_t aux = 0x80;
+
+  for(uint16_t i = 0; i<tam; i++){
+	if(_draw[i/8] & (aux >> (i % 8)) ){
+	  J3_SH1106_setPixel(_oled, _x + contX, _y);
+	}
+    else{
+    	J3_SH1106_setClsPixel(_oled, _x + contX, _y);
+	}
+    contX++;
+    if(contX == _w){
+      _y++;
+	  contX = 0;
+    }
+  }
+}
+
+void J3_SH1106_setBox(TOLED* _oled, uint8_t _x, uint8_t _y, uint8_t _w, uint8_t _h,  uint8_t _fill){
+  J3_SH1106_line(_oled, _x, _y, _x + _w, _y);
+  J3_SH1106_line(_oled, _x, _y, _x, _y + _h);
+  J3_SH1106_line(_oled, _x +_w, _y, _x + _w, _y + _h);
+  J3_SH1106_line(_oled, _x, _y + _h, _x + _w, _y + _h);
+}
+
 
 
 void J3_SH1106_writeBuffer(TOLED* _oled){

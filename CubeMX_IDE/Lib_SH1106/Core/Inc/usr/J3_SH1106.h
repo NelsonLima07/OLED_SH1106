@@ -33,6 +33,16 @@ void J3_SH1106_setPixel(TOLED* _oled,  uint8_t _x, uint8_t _y);    /* Set pixel 
 void J3_SH1106_setClsPixel(TOLED* _oled,  uint8_t _x, uint8_t _y); /* Limpa pixel na tela */
 void J3_SH1106_clsDisplay2(TOLED* _oled); /* Limpa o display somente onde houver "sujeira" */
 void J3_SH1106_line(TOLED* _oled, uint8_t _x0, uint8_t _y0, uint8_t _x1, uint8_t _y1);
+void J3_SH1106_lineDash(TOLED* _oled, uint8_t _x0, uint8_t _y0, uint8_t _x1, uint8_t _y1);
+
+void J3_SH1106_plotByteX(TOLED* _oled, uint8_t _x, uint8_t _y, uint8_t _b); /* Desenha o byte com orientacao horizontal */
+void J3_SH1106_plotByteY(TOLED* _oled, uint8_t _x, uint8_t _y, uint8_t _b); /* Desenha o byte com orientacao vertical */
+void J3_SH1106_draw(TOLED* _oled, uint8_t* _draw, uint8_t _x, uint8_t _y, uint8_t _w, uint8_t _h);
+
+
+void J3_SH1106_setBox(TOLED* _oled, uint8_t _x, uint8_t _y, uint8_t _w, uint8_t _h,  uint8_t _fill); /* Desenha uma caixa */
+
+
 
 
 #endif /* INC_J3_SH1106_H_ */
