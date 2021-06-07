@@ -15,13 +15,22 @@ typedef struct TOLED TOLED;
 
 TOLED* J3_SH1106_new(I2C_HandleTypeDef* _i2c, uint8_t _i2c_address); /* Retorna um ponteiro para um um OLED */
 
-void J3_SH1106_onDisplay(TOLED* _oled);
-void J3_SH1106_offDisplay(TOLED* _oled);
-void J3_SH1106_setContrast(TOLED* _oled, uint8_t _valContraste);
-void J3_SH1106_clsDisplay(TOLED* _oled);
-void J3_SH1106_setNormal(TOLED* _oled);
-void J3_SH1106_setReverse(TOLED* _oled);
-void J3_SH1106_setDisplayClock(TOLED* _oled);
+void J3_SH1106_onDisplay(TOLED* _oled);  /* Liga o display */
+void J3_SH1106_offDisplay(TOLED* _oled); /* Desliga o display */
+void J3_SH1106_setContrast(TOLED* _oled, uint8_t _valContraste); /* Set o valor de contraste. Maior mais branco */
+void J3_SH1106_clsDisplay(TOLED* _oled); /* Limpa o todas as posições do display. Não limpa o buffer */
+//void J3_SH1106_clsDisplayBuff(TOLED* _oled); /* Limpa o display e o buffer  */
+
+void J3_SH1106_setNormal(TOLED* _oled); /* Fundo escuro e pixel branco */
+void J3_SH1106_setReverse(TOLED* _oled); /* Fundo branco e pixel preto */
+void J3_SH1106_setDisplayClock(TOLED* _oled); /* Frequencia do display */
+
+void J3_SH1106_clsBuffer(TOLED* _oled);
+void J3_SH1106_copyBuffer(TOLED* _oled, TOLED* _oledBuffer); /* copia buffer */
+void J3_SH1106_plotBuffer(TOLED* _oled); /* plotar o buffer na tela */
+void J3_SH1106_fillBuffer(TOLED* _oled, TOLED* _oledBuffer); /* preenche o buffer atualizando a tela */
+
+
 
 void J3_SH1106_cursorX(TOLED* _oled, uint8_t add);
 void J3_SH1106_cursorY(TOLED* _oled, uint8_t add);

@@ -57,6 +57,7 @@ uint16_t j3_sh1106_getIndexBuffer(uint8_t _x, uint8_t _y){
   return (_y * 128) + _x;
 }
 
+/*
 uint8_t j3_sh1106_calcByte(TOLED* _oled, uint8_t _x, uint8_t _y){
   uint16_t auxIndex;
   uint8_t page;
@@ -67,7 +68,8 @@ uint8_t j3_sh1106_calcByte(TOLED* _oled, uint8_t _x, uint8_t _y){
   _oled->buffer[auxIndex]  = _oled->buffer[auxIndex] | (0x01 << resto);
   return _oled->buffer[auxIndex];
 }
-
+*/
+/*
 uint8_t j3_sh1106_calcByteCls(TOLED* _oled, uint8_t _x, uint8_t _y){
   uint16_t auxIndex;
   uint8_t page;
@@ -78,7 +80,7 @@ uint8_t j3_sh1106_calcByteCls(TOLED* _oled, uint8_t _x, uint8_t _y){
   _oled->buffer[auxIndex]  = _oled->buffer[auxIndex] & (~(0x01 << resto));             //(0xFE << resto);
   return _oled->buffer[auxIndex];
 }
-
+*/
 
 
 
@@ -124,6 +126,44 @@ void J3_SH1106_setDisplayClock(TOLED* _oled){// set
   j3_sh1106_sendCmd(_oled, 0x00);
 }
 
+void J3_SH1106_clsBuffer(TOLED* _oled){
+  for(uint16_t i = 0; i < 1024; i++){
+	_oled->buffer[i] = 0;
+  }
+}
+
+void J3_SH1106_copyBuffer(TOLED* _oled, TOLED* _oledBuffer){
+  for(uint16_t i = 0; i < 1024; i++){
+    _oled->buffer[i] = _oledBuffer->buffer[i];
+  }
+}
+
+void J3_SH1106_plotBuffer(TOLED* _oled){
+  for(uint8_t y = 0; y <= 7; y++){
+	J3_SH1106_cursorY(_oled, y);
+	for(uint8_t x = 0; x <= 127; x++){
+	  J3_SH1106_cursorX(_oled, x);
+	  j3_sh1106_sendDado(_oled, _oled->buffer[j3_sh1106_getIndexBuffer(x, y)]);
+    }
+  }
+}
+
+void J3_SH1106_fillBuffer(TOLED* _oled, TOLED* _oledBuffer){
+  uint16_t i;
+  for(uint8_t y = 0; y <= 7; y++){
+	J3_SH1106_cursorY(_oled, y);
+	for(uint8_t x = 0; x <= 127; x++){
+		J3_SH1106_cursorX(_oled, x);
+		i = j3_sh1106_getIndexBuffer(x, y);
+		if(_oled->buffer[i] != _oledBuffer->buffer[i]){
+		  _oled->buffer[i] = _oledBuffer->buffer[i];
+	      j3_sh1106_sendDado(_oled, _oled->buffer[i]);
+	  }
+    }
+  }
+}
+
+
 
 void J3_SH1106_cursorX(TOLED* _oled, uint8_t _address){ //Set column address for Page Addressing Mode
   if(_address <= 127){
@@ -163,8 +203,8 @@ void J3_SH1106_clsDisplay(TOLED* _oled){
   //J3_SH1106_offDisplay(_oled);
   for (uint8_t line = 0 ; line <= 7; line++){
     J3_SH1106_cursorY(_oled, line);
-    J3_SH1106_cursorX(_oled, 0);
 	for (uint8_t x = 0 ; x <= 127; x++){
+	  J3_SH1106_cursorX(_oled, 0);
 	  j3_sh1106_sendDado(_oled,0);
 	}
   }
@@ -196,7 +236,7 @@ void J3_SH1106_setPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
 
     auxIndex = j3_sh1106_getIndexBuffer(_x,page);
     resto = _y % 8;
-    if( _oled->buffer[auxIndex]  != (_oled->buffer[auxIndex] | (0x01 << resto)) ){
+    if( _oled->buffer[auxIndex]  != (_oled->buffer[auxIndex] | (0x01 << resto)) ){ /* Verifica se o byte esta diferente no buffer */
       _oled->buffer[auxIndex]  = (_oled->buffer[auxIndex] | (0x01 << resto));
       J3_SH1106_cursorX(_oled, _x);
       J3_SH1106_cursorY(_oled, page);
@@ -206,7 +246,7 @@ void J3_SH1106_setPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
 }
 
 
-/*
+/* Depereciado. Nao verifica se realmente precisa atualizar o byte
 void J3_SH1106_setClsPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
   if ((_x < 128) && (_y < 64)){
     uint8_t page = _y / 8;
@@ -394,14 +434,6 @@ void J3_SH1106_setBox(TOLED* _oled, uint8_t _x, uint8_t _y, uint8_t _w, uint8_t 
 
 
 
-void J3_SH1106_writeBuffer(TOLED* _oled){
-  for(uint8_t y = 0; y < 7; y++){
-	J3_SH1106_cursorY(_oled, y);
-	J3_SH1106_cursorX(_oled, 0);
-	for(uint8_t x = 0; x < 127; x++){
-	  j3_sh1106_sendDado(_oled, _oled->buffer[y*x]);
-    }
-  }
-}
+
 
 

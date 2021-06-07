@@ -64,9 +64,6 @@ void apagaBola(TOLED* _oled, uint8_t _x, uint8_t _y);
   * @brief  The application entry point.
   * @retval int
   */
-
-
-
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -99,7 +96,10 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   TOLED* oled;
+  TOLED* oledBuffer;
+
   oled = J3_SH1106_new(&hi2c2,0x78);
+  oledBuffer = J3_SH1106_new(NULL,0x00);
 
   J3_SH1106_offDisplay(oled);
   J3_SH1106_clsDisplay(oled);
@@ -207,6 +207,9 @@ int main(void)
   HAL_Delay(3000);
   J3_SH1106_draw(oled, (uint8_t *)mario, 0,0,128,40);
   HAL_Delay(3000);
+  J3_SH1106_setReverse(oled); /* Fundo branco e pixel preto */
+  HAL_Delay(3000);
+ // J3_SH1106_setNormal(oled);
 
   //J3_SH1106_setPixel(oled,127,0);
   //J3_SH1106_setPixel(oled,127,63);
@@ -224,11 +227,13 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	desenhaBola(oled, bolaX, bolaY);
-	J3_SH1106_lineDash(oled, 63,0,63,127);
-	J3_SH1106_lineDash(oled, 64,0,64,127);
-	HAL_Delay(50);
-	apagaBola(oled, bolaX, bolaY);
+	J3_SH1106_clsBuffer(oledBuffer);
+	desenhaBola(oledBuffer, bolaX, bolaY);
+	J3_SH1106_lineDash(oledBuffer, 63,0,63,127);
+	J3_SH1106_lineDash(oledBuffer, 64,0,64,127);
+	J3_SH1106_fillBuffer(oled, oledBuffer);
+	HAL_Delay(1);
+	//apagaBola(oled, bolaX, bolaY);
 
 	bolaX = bolaX + bolaX_vel;
 	bolaY = bolaY + bolaY_vel;
@@ -256,8 +261,6 @@ int main(void)
   }
   /* USER CODE END 3 */
 }
-
-
 
 /**
   * @brief System Clock Configuration
