@@ -53,9 +53,19 @@ void j3_sh1106_sendDado(TOLED* _oled, uint8_t _dado){
   }
 }
 
+/* Retorna i de X e Y */
 uint16_t j3_sh1106_getIndexBuffer(uint8_t _x, uint8_t _y){
   return (_y * 128) + _x;
 }
+/* Retorna X de i */
+uint8_t j3_sh1106_getXBuffer(uint16_t _i){
+  return (_i % 128);
+}
+/* Retorna Y de i */
+uint8_t j3_sh1106_getYBuffer(uint16_t _i){
+  return (_i / 128);
+}
+
 
 /*
 uint8_t j3_sh1106_calcByte(TOLED* _oled, uint8_t _x, uint8_t _y){
@@ -91,7 +101,7 @@ TOLED* J3_SH1106_new(I2C_HandleTypeDef* _i2c, uint8_t _i2c_address){
   auxOLED->address = _i2c_address;
   auxOLED->i2c = _i2c;
   auxOLED->buffer = malloc(128 * 8 * sizeof(uint8_t));
-  memset(auxOLED->buffer,0x00, 128 * 8 * sizeof(uint8_t));
+  memset(auxOLED->buffer, 0x00, 128 * 8 * sizeof(uint8_t));
   return auxOLED;
 }
 
@@ -107,6 +117,23 @@ void J3_SH1106_setContrast(TOLED* _oled, uint8_t _valContraste){// set contrast 
   j3_sh1106_sendCmd(_oled,0x81);
   j3_sh1106_sendCmd(_oled,_valContraste);
 }
+
+void J3_SH1106_clrDisplay(TOLED* _oled){
+  J3_SH1106_offDisplay(_oled);
+  for (uint8_t line = 0 ; line <= 7; line++){
+    J3_SH1106_cursorY(_oled, line);
+	for (uint8_t x = 0 ; x <= 127; x++){
+	  J3_SH1106_cursorX(_oled, x);
+	  j3_sh1106_sendDado(_oled,0x00);
+	}
+  }
+  J3_SH1106_onDisplay(_oled);
+}
+
+void J3_SH1106_clrBuffer(TOLED* _oled){
+  memset(_oled->buffer, 0x00, 128 * 8 * sizeof(uint8_t));
+}
+
 
 void J3_SH1106_setDisplayLine(TOLED* _oled) {
   j3_sh1106_sendCmd(_oled, 0x40) ;
@@ -126,11 +153,6 @@ void J3_SH1106_setDisplayClock(TOLED* _oled){// set
   j3_sh1106_sendCmd(_oled, 0x00);
 }
 
-void J3_SH1106_clsBuffer(TOLED* _oled){
-  for(uint16_t i = 0; i < 1024; i++){
-	_oled->buffer[i] = 0;
-  }
-}
 
 void J3_SH1106_copyBuffer(TOLED* _oled, TOLED* _oledBuffer){
   for(uint16_t i = 0; i < 1024; i++){
@@ -151,17 +173,30 @@ void J3_SH1106_plotBuffer(TOLED* _oled){
 void J3_SH1106_fillBuffer(TOLED* _oled, TOLED* _oledBuffer){
   uint16_t i;
   for(uint8_t y = 0; y <= 7; y++){
-	J3_SH1106_cursorY(_oled, y);
 	for(uint8_t x = 0; x <= 127; x++){
-		J3_SH1106_cursorX(_oled, x);
 		i = j3_sh1106_getIndexBuffer(x, y);
 		if(_oled->buffer[i] != _oledBuffer->buffer[i]){
+		  J3_SH1106_cursorXY(_oled, x, y);
 		  _oled->buffer[i] = _oledBuffer->buffer[i];
 	      j3_sh1106_sendDado(_oled, _oled->buffer[i]);
 	  }
     }
   }
 }
+
+void J3_SH1106_fillBuffer2(TOLED* _oled, TOLED* _oledBuffer){
+  uint8_t y = 0, x = 0;
+  for(uint16_t i = 0; i < 1024; i++){
+    if(_oled->buffer[i] != _oledBuffer->buffer[i]){
+      x = j3_sh1106_getXBuffer(i);
+      y = j3_sh1106_getYBuffer(i);
+      J3_SH1106_cursorXY(_oled, x, y);
+      _oled->buffer[i] = _oledBuffer->buffer[i];
+      j3_sh1106_sendDado(_oled, _oled->buffer[i]);
+    }
+  }
+}
+
 
 
 
@@ -199,16 +234,6 @@ void J3_SH1106_cursorClsLine(TOLED* _oled){
   }
 }
 
-void J3_SH1106_clsDisplay(TOLED* _oled){
-  //J3_SH1106_offDisplay(_oled);
-  for (uint8_t line = 0 ; line <= 7; line++){
-    J3_SH1106_cursorY(_oled, line);
-	for (uint8_t x = 0 ; x <= 127; x++){
-	  J3_SH1106_cursorX(_oled, 0);
-	  j3_sh1106_sendDado(_oled,0);
-	}
-  }
-}
 
 /*
 void J3_SH1106_setPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
@@ -284,7 +309,7 @@ void J3_SH1106_setChar(TOLED*_oled, unsigned char _c){
 
 }
 
-void J3_SH1106_clsDisplay2(TOLED* _oled){
+void J3_SH1106_clrDisplayByBuffer(TOLED* _oled){
   uint16_t auxIndex;
   for (uint8_t line = 0 ; line <= 7; line++){
 	for (uint8_t x = 0 ; x <= 127; x++){
@@ -293,7 +318,7 @@ void J3_SH1106_clsDisplay2(TOLED* _oled){
 	    _oled->buffer[auxIndex] = 0x00;
     	J3_SH1106_cursorY(_oled, line);
 		J3_SH1106_cursorX(_oled, x);
-		j3_sh1106_sendDado(_oled,0);
+		j3_sh1106_sendDado(_oled,0x00);
 	  }
 	}
   }

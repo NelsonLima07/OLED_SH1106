@@ -102,11 +102,11 @@ int main(void)
   oledBuffer = J3_SH1106_new(NULL,0x00);
 
   J3_SH1106_offDisplay(oled);
-  J3_SH1106_clsDisplay(oled);
   J3_SH1106_setNormal(oled);
   J3_SH1106_setContrast(oled,255);
-  J3_SH1106_onDisplay(oled);
+  //J3_SH1106_onDisplay(oled);
   J3_SH1106_setDisplayClock(oled);
+  J3_SH1106_clrDisplay(oled);
 
   uint8_t x = 1;
   uint8_t y = 31;
@@ -203,12 +203,16 @@ int main(void)
  // J3_SH1106_setBox(oled, 4,10,4,12,0);
 
  // J3_SH1106_setBox(oled, 120,10,4,12,0);
-  J3_SH1106_draw(oled, (uint8_t *)estrela, 10,10,48,48);
-  HAL_Delay(3000);
-  J3_SH1106_draw(oled, (uint8_t *)mario, 0,0,128,40);
-  HAL_Delay(3000);
-  J3_SH1106_setReverse(oled); /* Fundo branco e pixel preto */
-  HAL_Delay(3000);
+
+
+//  J3_SH1106_draw(oled, (uint8_t *)estrela, 10,10,48,48);
+//  HAL_Delay(3000);
+//  J3_SH1106_draw(oled, (uint8_t *)mario, 0,0,128,40);
+//  HAL_Delay(3000);
+
+
+  // J3_SH1106_setReverse(oled); /* Fundo branco e pixel preto */
+ // HAL_Delay(3000);
  // J3_SH1106_setNormal(oled);
 
   //J3_SH1106_setPixel(oled,127,0);
@@ -219,20 +223,25 @@ int main(void)
 
   uint8_t bolaX = 63;
   uint8_t bolaY = 3;
-  int8_t bolaX_vel = 1;
-  int8_t bolaY_vel = 2;
+  int8_t bolaX_vel = 2;
+  int8_t bolaY_vel = 3;
+  HAL_Delay(1000);
+  J3_SH1106_clrDisplay(oled);
 
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	J3_SH1106_clsBuffer(oledBuffer);
+
+	//J3_SH1106_clrDisplay(oled);
+	J3_SH1106_clrBuffer(oledBuffer);
+	//J3_SH1106_copyBuffer(oledBuffer,oled);
 	desenhaBola(oledBuffer, bolaX, bolaY);
 	J3_SH1106_lineDash(oledBuffer, 63,0,63,127);
 	J3_SH1106_lineDash(oledBuffer, 64,0,64,127);
-	J3_SH1106_fillBuffer(oled, oledBuffer);
-	HAL_Delay(1);
+	J3_SH1106_fillBuffer2(oled, oledBuffer);
+	HAL_Delay(10);
 	//apagaBola(oled, bolaX, bolaY);
 
 	bolaX = bolaX + bolaX_vel;
