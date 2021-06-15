@@ -191,7 +191,7 @@ int main(void)
   int8_t bolaY_vel = 3;
 
   J3_SH1106_draw(oled, (uint8_t *)pong, 0,0,128,32);
-  HAL_Delay(5000);
+  HAL_Delay(7000);
   J3_SH1106_clrDisplayByBuffer(oled);
 
 
@@ -215,7 +215,7 @@ int main(void)
 	desenhaPlay(oledBuffer, play2_x, play2_y);
 
 	J3_SH1106_fillBuffer2(oled, oledBuffer);
-	HAL_Delay(30);
+	HAL_Delay(20);
 
 	bolaX = bolaX + bolaX_vel;
 	bolaY = bolaY + bolaY_vel;
@@ -225,19 +225,23 @@ int main(void)
 	    bolaX_vel = bolaX_vel * (-1);
 	    bolaY_vel = bolaY_vel * (-1);
 	  }
-	}else if(bolaX >= 124){
-	  bolaX = 64;
-	  bolaX_vel = 1;
-    }
+      if(bolaX >= 123){
+		  bolaX = 64;
+		  bolaX_vel = bolaX_vel * (-1);
+		  bolaX_vel = 1;
+	  }
+	}
 
 	if(bolaX <= 7){
 	  if(bolaY >= (play1_y-5) && bolaY <= (play1_y+5)){
 	    bolaX_vel = bolaX_vel * (-1);
 	    bolaY_vel = bolaY_vel * (-1);
 	  }
-	}else if (bolaX <= 3){
-	   bolaX = 63;
-	   bolaX_vel = 1;
+      if (bolaX <= 4){
+		   bolaX = 63;
+		   bolaX_vel = bolaX_vel * (-1);
+		   bolaX_vel = 1;
+	  }
 	}
 
 	if(bolaY >= 61){
@@ -248,6 +252,33 @@ int main(void)
 	  bolaY = 2;
 	  bolaY_vel = bolaY_vel * (-1);
 	}
+
+	 if(bolaX >= 72){
+		if(play2_y > bolaY){
+		  play2_y = play2_y - 2;
+		  if(play2_y <= 6)
+		    play2_y = 6;
+		}
+		if(play2_y < bolaY){
+    	  play2_y = play2_y + 2;
+		  if(play2_y > 58 )
+		    play2_y = 58;
+		}
+	 }
+
+	 if(bolaX <= 55){
+		if(play1_y > bolaY){
+		  play1_y = play1_y - 2;
+		  if(play1_y <= 6)
+		    play1_y = 6;
+		}
+		if(play1_y < bolaY){
+    	  play1_y = play1_y + 2;
+		  if(play1_y > 58 )
+		    play1_y = 58;
+		}
+	 }
+
 
 
 
