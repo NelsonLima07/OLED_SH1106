@@ -1,5 +1,5 @@
-main.c:67:5:main	320	static
-main.c:278:6:SystemClock_Config	72	static
-main.c:313:6:desenhaBola	16	static
-main.c:327:6:apagaBola	16	static
-main.c:347:6:Error_Handler	4	static,ignoring_inline_asm
+main.c:112:5:main	40	static
+main.c:262:6:SystemClock_Config	72	static
+main.c:297:6:desenhaBola	16	static
+main.c:311:6:desenhaPlay	40	static
+main.c:328:6:Error_Handler	4	static,ignoring_inline_asm
