@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
 #include "i2c.h"
 #include "gpio.h"
 
@@ -99,8 +100,44 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void desenhaBola(TOLED* _oled, uint8_t _x, uint8_t _y);
-void desenhaPlay(TOLED* _oled, uint8_t _x, uint8_t _y);
+
+typedef struct {
+  uint8_t tamX;
+  uint8_t tamY;
+  uint8_t posX;
+  uint8_t posY;
+  uint8_t pontos;
+} TJogador;
+
+typedef struct {
+  float velX;
+  float velY;
+  uint8_t posX;
+  uint8_t posY;
+} TBola;
+
+
+void desenhaBola(TOLED* _oled, TBola* _bola);
+void desenhaJogador(TOLED* _oled, TJogador* _jogador);
+
+uint16_t getValorPot1();
+
+
+TJogador* Jogador_new(){
+  TJogador* auxJogador;
+
+  auxJogador = malloc(sizeof(TJogador));
+
+  return auxJogador;
+}
+
+TBola* Bola_new(){
+  TBola* auxBola;
+
+  auxBola = malloc(sizeof(TBola));
+
+  return auxBola;
+}
 
 
 /* USER CODE END 0 */
@@ -113,6 +150,8 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
+
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -121,6 +160,8 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
+
+
 
   /* USER CODE END Init */
 
@@ -134,6 +175,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_I2C2_Init();
+  MX_ADC1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -146,6 +188,8 @@ int main(void)
   oled = J3_SH1106_new(&hi2c2,0x78);
   oledBuffer = J3_SH1106_new(NULL,0x00);
 
+  HAL_Delay(1000); // Espera estabilizar o display
+
   J3_SH1106_offDisplay(oled);
   J3_SH1106_setNormal(oled);
   J3_SH1106_setContrast(oled,255);
@@ -153,48 +197,38 @@ int main(void)
   J3_SH1106_setDisplayClock(oled);
   J3_SH1106_clrDisplay(oled);
 
-  uint8_t x = 1;
-  uint8_t y = 31;
-  uint16_t cont = 0;
+  TJogador *J1, *J2;
+  TBola* bola;
 
-  uint8_t play1_x = 4;
-  uint8_t play1_y = 30;
+  bola = Bola_new();
+  bola->posX = 63;
+  bola->posY = 3;
+  bola->velX = 2;
+  bola->velY = 3;
 
-  uint8_t play2_x = 127-4;
-  uint8_t play2_y = 30;
+  J1 = Jogador_new();
+  J1->tamX = 5;
+  J1->tamY = 15;
+  J1->posX = 5;
+  J1->posY = 30;
+  J1->pontos = 0;
+
+  J2 = Jogador_new();
+  J2->tamX = 5;
+  J2->tamY = 15;
+  J2->posX = 122;
+  J2->posY = 30;
+  J2->pontos = 0;
 
 
- // J3_SH1106_setBox(oled, 4,10,4,12,0);
-
- // J3_SH1106_setBox(oled, 120,10,4,12,0);
-
-
-//  J3_SH1106_draw(oled, (uint8_t *)estrela, 10,10,48,48);
-//  HAL_Delay(3000);
-//  J3_SH1106_draw(oled, (uint8_t *)mario, 0,0,128,40);
-//  HAL_Delay(3000);
-
-
-  // J3_SH1106_setReverse(oled); /* Fundo branco e pixel preto */
- // HAL_Delay(3000);
- // J3_SH1106_setNormal(oled);
-
-  //J3_SH1106_setPixel(oled,127,0);
-  //J3_SH1106_setPixel(oled,127,63);
- // desenhaBola(oled,1,3);
-  //HAL_Delay(2000);
-  //apagaBola(oled,1,3);
-
-  uint8_t bolaX = 63;
-  uint8_t bolaY = 3;
-  int8_t bolaX_vel = 2;
-  int8_t bolaY_vel = 3;
+  int16_t adP1;
 
   J3_SH1106_draw(oled, (uint8_t *)pong, 0,0,128,32);
   HAL_Delay(7000);
   J3_SH1106_clrDisplayByBuffer(oled);
 
 
+  HAL_ADCEx_Calibration_Start(&hadc1);
   while (1)
   {
     /* USER CODE END WHILE */
@@ -210,74 +244,89 @@ int main(void)
 	J3_SH1106_lineDash(oledBuffer, 64,0,64,127);
 
 
-	desenhaBola(oledBuffer, bolaX, bolaY);
-	desenhaPlay(oledBuffer, play1_x, play1_y);
-	desenhaPlay(oledBuffer, play2_x, play2_y);
+	desenhaBola(oledBuffer, bola);
+	desenhaJogador(oledBuffer, J1);
+	desenhaJogador(oledBuffer, J2);
 
 	J3_SH1106_fillBuffer2(oled, oledBuffer);
 	HAL_Delay(20);
 
-	bolaX = bolaX + bolaX_vel;
-	bolaY = bolaY + bolaY_vel;
+	//bola->posX = bola->posX + bola->velX;
+	bola->posX += bola->velX;
+	bola->posY += bola->velY;
 
-	if(bolaX >= 120){
-	  if(bolaY >= (play2_y-5) && bolaY <= (play2_y+5)){
-	    bolaX_vel = bolaX_vel * (-1);
-	    bolaY_vel = bolaY_vel * (-1);
+	if(bola->posX >= 120){
+	  if(bola->posY >= (J2->posY-5) && bola->posY <= (J2->posY+5)){
+	    bola->velX = bola->velX * (-1);
+	    bola->velY = bola->velY * (-1);
 	  }
-      if(bolaX >= 123){
-		  bolaX = 64;
-		  bolaX_vel = bolaX_vel * (-1);
-		  bolaX_vel = 1;
-	  }
-	}
-
-	if(bolaX <= 7){
-	  if(bolaY >= (play1_y-5) && bolaY <= (play1_y+5)){
-	    bolaX_vel = bolaX_vel * (-1);
-	    bolaY_vel = bolaY_vel * (-1);
-	  }
-      if (bolaX <= 4){
-		   bolaX = 63;
-		   bolaX_vel = bolaX_vel * (-1);
-		   bolaX_vel = 1;
+      if(bola->posX >= 123){
+    	  bola->posX = 64;
+		  bola->velX = bola->velX * (-1);
+		  bola->velX = 1;
 	  }
 	}
 
-	if(bolaY >= 61){
-	  bolaY = 61;
-	  bolaY_vel = bolaY_vel * (-1);
-	}
-	if(bolaY <= 2){
-	  bolaY = 2;
-	  bolaY_vel = bolaY_vel * (-1);
+	if(bola->posX <= 7){
+	  if(bola->posY >= (J1->posY-5) && bola->posY <= (J1->posY+5)){
+	    bola->velX = bola->velX * (-1);
+	    bola->velY = bola->velY * (-1);
+	  }
+      if (bola->posX <= 4){
+    	  bola->posX = 63;
+		   bola->velX = bola->velX * (-1);
+		   bola->velX = 1;
+	  }
 	}
 
-	 if(bolaX >= 72){
-		if(play2_y > bolaY){
-		  play2_y = play2_y - 2;
-		  if(play2_y <= 6)
-		    play2_y = 6;
+	if(bola->posY >= 61){
+	  bola->posY = 61;
+	  bola->velY = bola->velY * (-1);
+	}
+	if(bola->posY <= 2){
+	  bola->posY = 2;
+	  bola->velY = bola->velY * (-1);
+	}
+
+/*
+	if(bola->posX >= 72){
+		if(J2->posY > bola->posY){
+		  J2->posY = J2->posY - 2;
+		  if(J2->posY <= 6)
+		    J2->posY = 6;
 		}
-		if(play2_y < bolaY){
-    	  play2_y = play2_y + 2;
-		  if(play2_y > 58 )
-		    play2_y = 58;
+		if(J2->posY < bola->posY){
+    	  J2->posY = J2->posY + 2;
+		  if(J2->posY > 58 )
+		    J2->posY = 58;
+		}
+	 }
+*/
+	 if(bola->posX <= 55){
+		if(J1->posY > bola->posY){
+		  J1->posY = J1->posY - 2;
+		  if(J1->posY <= 6)
+		    J1->posY = 6;
+		}
+		if(J1->posY < bola->posY){
+    	  J1->posY = J1->posY + 2;
+		  if(J1->posY > 58 )
+		    J1->posY = 58;
 		}
 	 }
 
-	 if(bolaX <= 55){
-		if(play1_y > bolaY){
-		  play1_y = play1_y - 2;
-		  if(play1_y <= 6)
-		    play1_y = 6;
-		}
-		if(play1_y < bolaY){
-    	  play1_y = play1_y + 2;
-		  if(play1_y > 58 )
-		    play1_y = 58;
-		}
-	 }
+
+	 /* 12bits ADC = 4096 */
+	 /* 54                */
+
+	 HAL_ADC_Start(&hadc1);
+
+	 HAL_ADC_PollForConversion(&hadc1, 200);
+	 adP1 = HAL_ADC_GetValue(&hadc1);
+	 HAL_ADC_Stop(&hadc1);
+
+	 J2->posY = (adP1 / 81) ;
+
 
 
 
@@ -294,6 +343,7 @@ void SystemClock_Config(void)
 {
   RCC_OscInitTypeDef RCC_OscInitStruct = {0};
   RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -322,30 +372,36 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_ADC;
+  PeriphClkInit.AdcClockSelection = RCC_ADCPCLK2_DIV6;
+  if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 /* USER CODE BEGIN 4 */
-void desenhaBola(TOLED* _oled, uint8_t _x, uint8_t _y){
-  J3_SH1106_setPixel(_oled,_x-1,_y-1);
-  J3_SH1106_setPixel(_oled,_x-1,_y);
-  J3_SH1106_setPixel(_oled,_x-1,_y+1);
+void desenhaBola(TOLED* _oled, TBola* _bola){
+  J3_SH1106_setPixel(_oled,_bola->posX-1,_bola->posY-1);
+  J3_SH1106_setPixel(_oled,_bola->posX-1,_bola->posY);
+  J3_SH1106_setPixel(_oled,_bola->posX-1,_bola->posY+1);
 
-  J3_SH1106_setPixel(_oled,_x,_y-1);
-  J3_SH1106_setPixel(_oled,_x,_y);
-  J3_SH1106_setPixel(_oled,_x,_y+1);
+  J3_SH1106_setPixel(_oled,_bola->posX,_bola->posY-1);
+  J3_SH1106_setPixel(_oled,_bola->posX,_bola->posY);
+  J3_SH1106_setPixel(_oled,_bola->posX,_bola->posY+1);
 
-  J3_SH1106_setPixel(_oled,_x+1,_y-1);
-  J3_SH1106_setPixel(_oled,_x+1,_y);
-  J3_SH1106_setPixel(_oled,_x+1,_y+1);
+  J3_SH1106_setPixel(_oled,_bola->posX+1,_bola->posY-1);
+  J3_SH1106_setPixel(_oled,_bola->posX+1,_bola->posY);
+  J3_SH1106_setPixel(_oled,_bola->posX+1,_bola->posY+1);
 }
 
-void desenhaPlay(TOLED* _oled, uint8_t _x, uint8_t _y){
-  const play_altura = 5;
-  const play_largura = 1;
-  J3_SH1106_line(_oled, _x-play_largura,_y-play_altura,_x+play_largura,_y-play_altura);
-  J3_SH1106_line(_oled, _x-play_largura,_y-play_altura,_x-play_largura,_y+play_altura);
-  J3_SH1106_line(_oled, _x-play_largura,_y+play_altura,_x+play_largura,_y+play_altura);
-  J3_SH1106_line(_oled, _x+play_largura,_y+play_altura,_x+play_largura,_y-play_altura);
+void desenhaJogador(TOLED* _oled, TJogador* _jogador){
+  const int8_t play_altura = 5;
+  const int8_t play_largura = 1;
+  J3_SH1106_line(_oled, _jogador->posX-play_largura,_jogador->posY-play_altura,_jogador->posX+play_largura,_jogador->posY-play_altura);
+  J3_SH1106_line(_oled, _jogador->posX-play_largura,_jogador->posY-play_altura,_jogador->posX-play_largura,_jogador->posY+play_altura);
+  J3_SH1106_line(_oled, _jogador->posX-play_largura,_jogador->posY+play_altura,_jogador->posX+play_largura,_jogador->posY+play_altura);
+  J3_SH1106_line(_oled, _jogador->posX+play_largura,_jogador->posY+play_altura,_jogador->posX+play_largura,_jogador->posY-play_altura);
 }
 
 

@@ -6,6 +6,7 @@
  */
 
 #include "stdlib.h"
+#include "string.h"
 
 #include "usr/J3_SH1106.h"
 
