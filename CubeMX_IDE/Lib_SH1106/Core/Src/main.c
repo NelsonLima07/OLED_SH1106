@@ -395,7 +395,7 @@ void desenhaBola(TOLED* _oled, TBola* _bola){
   J3_SH1106_setPixel(_oled,_bola->posX+1,_bola->posY+1);
 }
 
-void desenhaJogador(TOLED* _oled, TJogador* _jogador){
+void desenhaJogador(TOLED* _oled, TJogador* _jogador) {
   const int8_t play_altura = 5;
   const int8_t play_largura = 1;
   J3_SH1106_line(_oled, _jogador->posX-play_largura,_jogador->posY-play_altura,_jogador->posX+play_largura,_jogador->posY-play_altura);
