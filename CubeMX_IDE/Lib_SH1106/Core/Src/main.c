@@ -27,6 +27,8 @@
 /* USER CODE BEGIN Includes */
 #include <stdlib.h>
 #include <usr/J3_SH1106.h>
+#include <usr/font.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/

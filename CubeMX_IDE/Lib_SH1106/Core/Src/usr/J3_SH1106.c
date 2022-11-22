@@ -18,6 +18,8 @@ struct TOLED{
   I2C_HandleTypeDef* i2c;
   uint8_t address;
   uint8_t* buffer;
+  uint8_t* font;
+
 };
 
 typedef struct TOLED TOLED;
@@ -103,6 +105,9 @@ TOLED* J3_SH1106_new(I2C_HandleTypeDef* _i2c, uint8_t _i2c_address){
   auxOLED->i2c = _i2c;
   auxOLED->buffer = malloc(128 * 8 * sizeof(uint8_t));
   memset(auxOLED->buffer, 0x00, 128 * 8 * sizeof(uint8_t));
+
+  auxOLED->font = NULL;
+
   return auxOLED;
 }
 
@@ -235,23 +240,6 @@ void J3_SH1106_cursorClsLine(TOLED* _oled){
   }
 }
 
-
-/*
-void J3_SH1106_setPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
-  if ((_x < 128) && (_y < 64)){
-    uint8_t page = _y / 8;
-    uint8_t dado;
-
-    J3_SH1106_cursorX(_oled, _x);
-    J3_SH1106_cursorY(_oled, page);
-
-    dado = j3_sh1106_calcByte(_oled, _x, _y);
-
-    j3_sh1106_sendDado(_oled, dado);
-  }
-}
-*/
-
 void J3_SH1106_setPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
   if ((_x < 128) && (_y < 64)){
     uint8_t page = _y / 8;
@@ -271,21 +259,6 @@ void J3_SH1106_setPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
   }
 }
 
-
-/* Depereciado. Nao verifica se realmente precisa atualizar o byte
-void J3_SH1106_setClsPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
-  if ((_x < 128) && (_y < 64)){
-    uint8_t page = _y / 8;
-    uint8_t dado;
-
-    J3_SH1106_cursorX(_oled, _x);
-    J3_SH1106_cursorY(_oled, page);
-
-    dado = j3_sh1106_calcByteCls(_oled, _x, _y);
-
-    j3_sh1106_sendDado(_oled, dado);
-  }
-}*/
 
 void J3_SH1106_setClsPixel(TOLED* _oled,  uint8_t _x, uint8_t _y){
   if ((_x < 128) && (_y < 64)){
@@ -449,6 +422,15 @@ void J3_SH1106_draw(TOLED* _oled, uint8_t* _draw, uint8_t _x, uint8_t _y, uint8_
 	  contX = 0;
     }
   }
+}
+
+void J3_SH1106_setFont(TOLED* _oled, uint8_t* _font){
+  _oled->font = _font;
+}
+
+
+void J3_SH1106_drawString(TOLED* _oled, uint8_t _x, uint8_t _y, char *_text){
+
 }
 
 void J3_SH1106_setBox(TOLED* _oled, uint8_t _x, uint8_t _y, uint8_t _w, uint8_t _h,  uint8_t _fill){
